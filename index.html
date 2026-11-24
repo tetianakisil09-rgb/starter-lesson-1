@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Starter: Greetings, Pronouns & To Be</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            sage: {
+              50: '#f4f7f5',
+              100: '#e3ebe6',
+              200: '#c7d8ce',
+              300: '#9fbcae',
+              500: '#5c8370',
+              600: '#476858',
+              700: '#395347',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body {
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f7f5;
+      color: #1e293b;
+    }
+    .slide-title-fluid {
+      font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+    }
+    .text-fluid-lg {
+      font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+    }
+    .text-fluid-base {
+      font-size: clamp(0.82rem, 1.15vw, 1rem);
+    }
+    .text-fluid-sm {
+      font-size: clamp(0.75rem, 1vw, 0.875rem);
+    }
+    .slide-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .slide-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .slide-scroll::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="h-[100dvh] w-screen overflow-hidden flex flex-col justify-between select-none">
+
+  <!-- Compact Top Header / Progress Bar (~44px) -->
+  <header class="h-[44px] shrink-0 bg-white border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <span id="slide-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sage-100 text-sage-700 tracking-wide shrink-0">
+        Greetings
+      </span>
+      <h1 id="slide-title" class="slide-title-fluid font-bold text-slate-800 tracking-tight truncate">
+        Hello! Nice to meet you!
+      </h1>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <div id="top-progress-bar" class="hidden sm:flex items-center gap-1">
+        <!-- Compact progress segments -->
+      </div>
+      <span id="top-counter" class="text-xs sm:text-sm font-semibold text-slate-500">
+        1 / 9
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Viewport-Fitted Slide Content Area -->
+  <main class="flex-1 min-h-0 w-full flex flex-col justify-center items-center px-3 sm:px-6 py-2.5 overflow-hidden">
+    <div id="slide-card" class="w-full max-w-6xl h-full bg-white rounded-2xl shadow-sm border border-slate-200/80 px-4 sm:px-6 py-3 flex flex-col justify-center overflow-y-auto slide-scroll">
+      <div id="slide-content" class="w-full h-full flex flex-col justify-center">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Compact Bottom Arrow Navigation Bar (~56px) -->
+  <footer class="h-[56px] shrink-0 bg-white border-t border-slate-200/80 px-4 sm:px-6 flex items-center justify-between">
+    <div class="w-full max-w-6xl mx-auto flex items-center justify-between">
+      <button id="prev-btn" type="button" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none transition-colors text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span>Previous</span>
+      </button>
+
+      <!-- Progress Dots & Slide Counter -->
+      <div class="flex items-center gap-3">
+        <span id="bottom-counter" class="text-xs sm:text-sm font-bold text-slate-700">
+          1 / 9
+        </span>
+        <div id="progress-dots" class="hidden sm:flex items-center gap-1.5">
+          <!-- Dots injected via JS -->
+        </div>
+      </div>
+
+      <button id="next-btn" type="button" class="flex items-center gap-1.5 px-4 py-1.5 rounded-xl font-semibold text-white bg-sage-600 hover:bg-sage-700 disabled:opacity-40 disabled:pointer-events-none transition-colors text-sm">
+        <span>Next</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    // ==========================================
+    // DATA & STATE MANAGEMENT
+    // ==========================================
+    const totalSlides = 9;
+    let currentSlide = 0;
+
+    // Slide 6: Practice 1 – Possessive Adjectives (10 items)
+    const practice1Questions = [
+      { id: 1, before: "This is", after: "house.", options: ["my", "I", "we"], answer: "my" },
+      { id: 2, before: "", after: "name is Maria.", options: ["Her", "She", "He"], answer: "Her" },
+      { id: 3, before: "He is my brother.", after: "name is Apollo.", options: ["His", "He", "Him"], answer: "His" },
+      { id: 4, before: "We are students. This is", after: "school.", options: ["our", "we", "they"], answer: "our" },
+      { id: 5, before: "Hello! What is", after: "name?", options: ["your", "you", "I"], answer: "your" },
+      { id: 6, before: "They are friends. This is", after: "dog.", options: ["their", "they", "them"], answer: "their" },
+      { id: 7, before: "I am Tetiana. This is", after: "phone.", options: ["my", "I", "me"], answer: "my" },
+      { id: 8, before: "She is a hairdresser. This is", after: "salon.", options: ["her", "she", "his"], answer: "her" },
+      { id: 9, before: "You are a student. Is this", after: "bag?", options: ["your", "you", "our"], answer: "your" },
+      { id: 10, before: "Mark and Anna are here.", after: "car is red.", options: ["Their", "They", "We"], answer: "Their" }
+    ];
+
+    // Slide 8: Verb "to be" – 3 Rows with 2 inline practice items per row
+    const slide8Rows = [
+      {
+        id: "pos",
+        badge: "+ Positive",
+        badgeClass: "bg-emerald-100 text-emerald-800",
+        formula: "I am / He is / We are",
+        items: [
+          { qId: "pos1", before: "She", after: "20 years old.", options: ["am", "is", "are"], answer: "is" },
+          { qId: "pos2", before: "I", after: "a student.", options: ["am", "is", "are"], answer: "am" }
+        ]
+      },
+      {
+        id: "neg",
+        badge: "- Negative",
+        badgeClass: "bg-rose-100 text-rose-800",
+        formula: "I am not / He isn't / We aren't",
+        items: [
+          { qId: "neg1", before: "He", after: "a firefighter.", options: ["am not", "isn't", "aren't"], answer: "isn't" },
+          { qId: "neg2", before: "They", after: "doctors.", options: ["am not", "isn't", "aren't"], answer: "aren't" }
+        ]
+      },
+      {
+        id: "que",
+        badge: "? Question",
+        badgeClass: "bg-sky-100 text-sky-800",
+        formula: "Am I...? / Is he...? / Are you...?",
+        items: [
+          { qId: "que1", before: "", after: "you a hairdresser?", options: ["Am", "Is", "Are"], answer: "Are" },
+          { qId: "que2", before: "", after: "his name Apollo?", options: ["Am", "Is", "Are"], answer: "Is" }
+        ]
+      }
+    ];
+
+    // Slide 9: Final Practice – Greetings, "to be" & Pronouns (10 items)
+    const finalPracticeQuestions = [
+      { id: 1, before: '"Nice to meet you!" — "', after: '"', options: ["Nice to meet you too!", "My name is", "I am 20"], answer: "Nice to meet you too!" },
+      { id: 2, before: "Hello!", after: "name is Tetiana.", options: ["My", "I", "Me"], answer: "My" },
+      { id: 3, before: "This is my brother.", after: "is a student.", options: ["He", "His", "Him"], answer: "He" },
+      { id: 4, before: "", after: "name is Maria. She is 20.", options: ["Her", "She", "His"], answer: "Her" },
+      { id: 5, before: "I", after: "your English teacher.", options: ["am", "is", "are"], answer: "am" },
+      { id: 6, before: "Mark and Serhii", after: "friends.", options: ["are", "is", "am"], answer: "are" },
+      { id: 7, before: "She", after: "a doctor. She is a hairdresser.", options: ["isn't", "aren't", "am not"], answer: "isn't" },
+      { id: 8, before: "", after: "they from Ukraine?", options: ["Are", "Is", "Am"], answer: "Are" },
+      { id: 9, before: "We love", after: "English class!", options: ["our", "we", "us"], answer: "our" },
+      { id: 10, before: '"What\'s your name?" — "', after: '"', options: ["I am Serhii.", "Nice to meet you too.", "He is Tom."], answer: "I am Serhii." }
+    ];
+
+    // User Selections Storage
+    let p1Answers = {};
+    let s8Answers = {};
+    let finalAnswers = {};
+
+    // ==========================================
+    // SLIDE DEFINITIONS
+    // ==========================================
+    const slides = [
+      // SLIDE 1: Greetings & Introductions
+      {
+        badge: "Slide 1 · Greetings",
+        title: "Greetings & Introductions",
+        render: () => {
+          const phrases = [
+            { main: "Hello! / Hi!", sub: "Friendly greeting" },
+            { main: "Nice to meet you.", sub: "When you meet someone new" },
+            { main: "Nice to meet you too.", sub: "Your reply" },
+            { main: "My name is...", sub: "Example: My name is Tetiana." },
+            { main: "I am...", sub: "Example: I am your student." },
+            { main: "What's your name?", sub: "Ask a person's name" }
+          ];
+          return `
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch my-auto">
+              <!-- Greeting Card -->
+              <div class="lg:col-span-5 bg-sage-50 border border-sage-200 rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-sage-600 text-white flex items-center justify-center text-2xl font-bold mb-2.5 shadow-sm">
+                  T
+                </div>
+                <span class="text-xs font-bold uppercase tracking-wider text-sage-700 bg-sage-200/70 px-3 py-0.5 rounded-full mb-3">
+                  Tetiana
+                </span>
+                <div class="bg-white border border-sage-200 rounded-xl p-4 shadow-sm w-full">
+                  <p class="text-fluid-lg font-medium text-slate-800 leading-relaxed">
+                    "Hello! Nice to meet you.<br>
+                    My name is <span class="font-bold text-sage-700">Tetiana</span>.<br>
+                    What's your name?"
+                  </p>
+                </div>
+              </div>
+
+              <!-- Key Phrases 2x3 Grid -->
+              <div class="lg:col-span-7 bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col justify-center">
+                <h2 class="text-xs sm:text-sm font-bold text-slate-600 uppercase tracking-wider mb-2.5 flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-sage-500"></span>
+                  Key Phrases
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  ${phrases.map(p => `
+                    <div class="bg-white p-3 rounded-xl border border-slate-200/90 flex flex-col justify-center">
+                      <p class="text-fluid-base font-bold text-sage-700">${p.main}</p>
+                      <p class="text-fluid-sm text-slate-500 mt-0.5">${p.sub}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      },
+
+      // SLIDE 2: Dialogue 1 – Meeting a Girlfriend
+      {
+        badge: "Slide 2 · Dialogue 1",
+        title: "Dialogue 1 – Meeting a Girlfriend",
+        render: () => renderDialogue([
+          { speaker: "Mark", color: "bg-slate-700 text-white", align: "left", text: "Hello, Serhii! This is my girlfriend, <span class='font-bold text-sage-700'>Maria</span>." },
+          { speaker: "Serhii", color: "bg-sage-600 text-white", align: "right", text: "Hello, Maria! Nice to meet you." },
+          { speaker: "Maria", color: "bg-amber-600 text-white", align: "left", text: "Nice to meet you too, Serhii!" },
+          { speaker: "Mark", color: "bg-slate-700 text-white", align: "right", text: "She is 20 years old. She is a hairdresser." }
+        ], "Mark, Serhii & Maria")
+      },
+
+      // SLIDE 3: Dialogue 2 – Meeting a Brother
+      {
+        badge: "Slide 3 · Dialogue 2",
+        title: "Dialogue 2 – Meeting a Brother",
+        render: () => renderDialogue([
+          { speaker: "Mary", color: "bg-rose-600 text-white", align: "left", text: "Hello, Serhii! This is my brother. His name is <span class='font-bold text-sage-700'>Apollo</span>." },
+          { speaker: "Serhii", color: "bg-sage-600 text-white", align: "right", text: "Hi, Apollo! Nice to meet you. How old are you?" },
+          { speaker: "Apollo", color: "bg-sky-700 text-white", align: "left", text: "Nice to meet you too! I am 19 years old. I am a student at university." }
+        ], "Mary, Serhii & Apollo")
+      },
+
+      // SLIDE 4: Dialogue 3 – Meeting Friends / Colleagues
+      {
+        badge: "Slide 4 · Dialogue 3",
+        title: "Dialogue 3 – Meeting Friends / Colleagues",
+        render: () => renderDialogue([
+          { speaker: "Anna", color: "bg-purple-700 text-white", align: "left", text: "Hello, Olena! This is my friend. His name is <span class='font-bold text-sage-700'>Tom</span>." },
+          { speaker: "Olena", color: "bg-teal-700 text-white", align: "right", text: "Hi, Tom! Nice to meet you. Are you a student?" },
+          { speaker: "Tom", color: "bg-slate-700 text-white", align: "left", text: "Nice to meet you too! No, I am 28 years old. I am a doctor. I work at a hospital." },
+          { speaker: "Olena", color: "bg-teal-700 text-white", align: "right", text: "Oh, great! I am a nurse at the hospital too." }
+        ], "Anna, Olena & Tom")
+      },
+
+      // SLIDE 5: Possessive Adjectives (Table)
+      {
+        badge: "Slide 5 · Grammar",
+        title: "Possessive Adjectives (I → my)",
+        render: () => {
+          const rows = [
+            { pro: "I", adj: "my", ex: "This is <span class='font-bold text-sage-700 underline decoration-sage-400'>my</span> book." },
+            { pro: "you", adj: "your", ex: "What is <span class='font-bold text-sage-700 underline decoration-sage-400'>your</span> name?" },
+            { pro: "he", adj: "his", ex: "<span class='font-bold text-sage-700 underline decoration-sage-400'>His</span> name is Apollo." },
+            { pro: "she", adj: "her", ex: "<span class='font-bold text-sage-700 underline decoration-sage-400'>Her</span> name is Maria." },
+            { pro: "we", adj: "our", ex: "This is <span class='font-bold text-sage-700 underline decoration-sage-400'>our</span> house." },
+            { pro: "they", adj: "their", ex: "This is <span class='font-bold text-sage-700 underline decoration-sage-400'>their</span> car." }
+          ];
+          return `
+            <div class="w-full max-w-4xl mx-auto my-auto">
+              <table class="w-full text-left border-collapse rounded-xl overflow-hidden border border-slate-200">
+                <thead>
+                  <tr class="bg-sage-100 text-sage-800 text-xs sm:text-sm uppercase tracking-wider">
+                    <th class="py-2 px-4 font-bold w-1/4">Pronoun</th>
+                    <th class="py-2 px-4 font-bold w-1/4">Possessive</th>
+                    <th class="py-2 px-4 font-bold">Simple Example</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-fluid-base">
+                  ${rows.map((r, idx) => `
+                    <tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'}">
+                      <td class="py-2 px-4 font-bold text-slate-800">${r.pro}</td>
+                      <td class="py-2 px-4">
+                        <span class="inline-block px-2.5 py-0.5 rounded-lg bg-sage-100 text-sage-800 font-bold">
+                          → ${r.adj}
+                        </span>
+                      </td>
+                      <td class="py-2 px-4 text-slate-700">${r.ex}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+      },
+
+      // SLIDE 6: Practice 1 – Possessive Adjectives (2 columns x 5 rows)
+      {
+        badge: "Slide 6 · Practice 1",
+        title: "Practice 1 – Possessive Adjectives",
+        render: () => renderQuizGrid(practice1Questions, p1Answers, "p1")
+      },
+
+      // SLIDE 7: Verb "to be" – First Look
+      {
+        badge: "Slide 7 · First Look",
+        title: 'Verb "to be" – First Look',
+        render: () => `
+          <div class="w-full max-w-4xl mx-auto space-y-4 my-auto">
+            <!-- Primary Pair -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Positive (+) -->
+              <div class="bg-emerald-50/80 border-2 border-emerald-200 rounded-2xl p-5 flex flex-col items-center text-center">
+                <span class="px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-200 text-emerald-900 mb-2.5">
+                  + Positive (Yes)
+                </span>
+                <p class="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800">
+                  He <u class="bg-emerald-200/80 px-2 py-0.5 rounded-lg decoration-emerald-600 decoration-4 underline-offset-4 text-emerald-800">is</u> a teacher.
+                </p>
+              </div>
+
+              <!-- Negative (-) -->
+              <div class="bg-rose-50/80 border-2 border-rose-200 rounded-2xl p-5 flex flex-col items-center text-center">
+                <span class="px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-200 text-rose-900 mb-2.5">
+                  - Negative (No)
+                </span>
+                <p class="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800">
+                  He <u class="bg-rose-200/80 px-2 py-0.5 rounded-lg decoration-rose-600 decoration-4 underline-offset-4 text-rose-800">isn't</u> a firefighter.
+                </p>
+              </div>
+            </div>
+
+            <!-- Secondary Simple Pair -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                <span class="text-xs font-bold uppercase text-emerald-700 block mb-1">+ Positive</span>
+                <p class="text-lg sm:text-xl font-bold text-slate-800">
+                  I <u class="bg-emerald-100 px-1.5 py-0.5 rounded decoration-emerald-600 decoration-2 underline-offset-4 text-emerald-800">am</u> a student.
+                </p>
+              </div>
+              <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                <span class="text-xs font-bold uppercase text-rose-700 block mb-1">- Negative</span>
+                <p class="text-lg sm:text-xl font-bold text-slate-800">
+                  I <u class="bg-rose-100 px-1.5 py-0.5 rounded decoration-rose-600 decoration-2 underline-offset-4 text-rose-800">am not</u> a doctor.
+                </p>
+              </div>
+            </div>
+          </div>
+        `
+      },
+
+      // SLIDE 8: Verb "to be" – Diagram & Mini Practice
+      {
+        badge: "Slide 8 · Grammar & Practice",
+        title: 'Verb "to be" – Diagram & Mini Practice',
+        render: () => `
+          <div class="w-full max-w-5xl mx-auto flex flex-col justify-center gap-2.5 my-auto">
+            <!-- Compact Branching Diagram -->
+            <div class="bg-sage-50 border border-sage-200 rounded-2xl px-4 py-2.5">
+              <div class="flex items-center justify-center gap-2 mb-1">
+                <span class="px-5 py-1 rounded-xl bg-sage-700 text-white font-bold text-base sm:text-lg tracking-wide shadow-sm">
+                  TO BE
+                </span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center text-sage-600 font-bold text-sm leading-none mb-1.5">
+                <div>↙</div>
+                <div>↓</div>
+                <div>↘</div>
+              </div>
+              <div class="grid grid-cols-3 gap-2.5">
+                <div class="bg-white border border-sage-200 rounded-xl py-1.5 px-2 text-center flex items-center justify-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-md bg-sage-100 text-sage-800 font-bold text-fluid-base">am</span>
+                  <span class="text-fluid-base font-semibold text-slate-700">I</span>
+                </div>
+                <div class="bg-white border border-sage-200 rounded-xl py-1.5 px-2 text-center flex items-center justify-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-md bg-sage-100 text-sage-800 font-bold text-fluid-base">is</span>
+                  <span class="text-fluid-base font-semibold text-slate-700">he, she, it</span>
+                </div>
+                <div class="bg-white border border-sage-200 rounded-xl py-1.5 px-2 text-center flex items-center justify-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-md bg-sage-100 text-sage-800 font-bold text-fluid-base">are</span>
+                  <span class="text-fluid-base font-semibold text-slate-700">you, we, they</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Compact Horizontal Practice Rows -->
+            <div class="space-y-2">
+              ${slide8Rows.map(row => `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+                  <!-- Left: Rule & Formula -->
+                  <div class="flex items-center gap-2.5 shrink-0">
+                    <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide ${row.badgeClass}">
+                      ${row.badge}
+                    </span>
+                    <span class="text-fluid-sm font-semibold text-slate-600">
+                      ${row.formula}
+                    </span>
+                  </div>
+
+                  <!-- Right: 2 Quick Inline Choices -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1 lg:max-w-2xl">
+                    ${row.items.map(item => {
+                      const chosen = s8Answers[item.qId];
+                      return `
+                        <div class="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 flex flex-wrap items-center justify-between gap-1.5 text-fluid-sm font-medium text-slate-800">
+                          <div>
+                            ${item.before ? `<span>${item.before}</span>` : ''}
+                            <span class="inline-block min-w-[44px] text-center px-1.5 mx-0.5 rounded border-b-2 font-bold ${
+                              chosen === item.answer
+                                ? 'bg-emerald-100 border-emerald-500 text-emerald-800'
+                                : chosen
+                                ? 'bg-rose-100 border-rose-500 text-rose-800'
+                                : 'bg-slate-50 border-slate-300 text-slate-400'
+                            }">${chosen || '___'}</span>
+                            <span>${item.after}</span>
+                          </div>
+                          <div class="flex items-center gap-1">
+                            ${item.options.map(opt => {
+                              let btnStyle = "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300";
+                              if (chosen === opt) {
+                                btnStyle = opt === item.answer
+                                  ? "bg-emerald-600 text-white border-emerald-600 font-bold"
+                                  : "bg-rose-500 text-white border-rose-500 font-bold";
+                              }
+                              return `
+                                <button
+                                  type="button"
+                                  onclick="selectS8Option('${item.qId}', '${opt.replace(/'/g, "\\'")}')"
+                                  class="px-2 py-0.5 rounded border text-xs transition-colors ${btnStyle}">
+                                  ${opt}
+                                </button>
+                              `;
+                            }).join('')}
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `
+      },
+
+      // SLIDE 9: Final Practice – Greetings, "to be" & Pronouns (2 columns x 5 rows)
+      {
+        badge: "Slide 9 · Final Practice",
+        title: 'Final Practice – Greetings, "to be" & Pronouns',
+        render: () => renderQuizGrid(finalPracticeQuestions, finalAnswers, "final")
+      }
+    ];
+
+    // ==========================================
+    // HELPER RENDER FUNCTIONS
+    // ==========================================
+    function renderDialogue(lines, subtitle) {
+      return `
+        <div class="max-w-3xl mx-auto w-full my-auto space-y-2.5">
+          <div class="text-center mb-1">
+            <span class="inline-block px-3.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+              ${subtitle}
+            </span>
+          </div>
+          ${lines.map(line => `
+            <div class="flex items-center gap-3 ${line.align === 'right' ? 'flex-row-reverse' : ''}">
+              <div class="w-10 h-10 rounded-xl ${line.color} flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
+                ${line.speaker[0]}
+              </div>
+              <div class="flex flex-col ${line.align === 'right' ? 'items-end' : 'items-start'} max-w-[82%]">
+                <span class="text-[11px] font-bold text-slate-500 mb-0.5 px-1">${line.speaker}</span>
+                <div class="px-4 py-2.5 rounded-2xl border ${
+                  line.align === 'right'
+                    ? 'bg-sage-50 border-sage-200 text-slate-800 rounded-tr-sm'
+                    : 'bg-slate-50 border-slate-200 text-slate-800 rounded-tl-sm'
+                }">
+                  <p class="text-fluid-base leading-snug">${line.text}</p>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderQuizGrid(questions, answerStore, quizKey) {
+      let correctCount = 0;
+      questions.forEach(q => {
+        if (answerStore[q.id] === q.answer) correctCount++;
+      });
+
+      return `
+        <div class="w-full h-full flex flex-col justify-center gap-2">
+          <!-- Compact Top Score & Reset Bar -->
+          <div class="flex items-center justify-between bg-sage-50 border border-sage-200 rounded-xl px-3.5 py-1.5 shrink-0">
+            <span class="text-xs sm:text-sm font-semibold text-sage-800">
+              Score: <span class="font-bold text-base">${correctCount}</span> / ${questions.length}
+            </span>
+            <button
+              type="button"
+              onclick="resetQuiz('${quizKey}')"
+              class="px-3 py-1 rounded-lg bg-white border border-sage-300 text-sage-700 hover:bg-sage-100 text-xs font-semibold transition-colors">
+              Reset
+            </button>
+          </div>
+
+          <!-- 2-Column x 5-Row Compact Grid (All 10 fit on 1 screen) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            ${questions.map(q => {
+              const userChoice = answerStore[q.id];
+              const isCorrect = userChoice === q.answer;
+              const isWrong = userChoice && userChoice !== q.answer;
+
+              let cardBorder = "border-slate-200 bg-slate-50/70";
+              if (isCorrect) cardBorder = "border-emerald-300 bg-emerald-50/60";
+              if (isWrong) cardBorder = "border-rose-300 bg-rose-50/60";
+
+              return `
+                <div class="px-3 py-2 rounded-xl border ${cardBorder} flex flex-col xl:flex-row xl:items-center justify-between gap-1.5 transition-colors">
+                  <div class="text-fluid-sm font-medium text-slate-800 leading-tight">
+                    <span class="font-bold text-slate-400 mr-1">${q.id}.</span>
+                    ${q.before ? `<span>${q.before}</span>` : ''}
+                    <span class="inline-block min-w-[48px] text-center px-1.5 mx-0.5 rounded border-b-2 font-bold ${
+                      isCorrect
+                        ? 'bg-emerald-100 border-emerald-500 text-emerald-800'
+                        : isWrong
+                        ? 'bg-rose-100 border-rose-500 text-rose-800'
+                        : 'bg-white border-slate-300 text-slate-400'
+                    }">
+                      ${userChoice || '___'}
+                    </span>
+                    <span>${q.after}</span>
+                  </div>
+
+                  <div class="flex flex-wrap gap-1 shrink-0">
+                    ${q.options.map(opt => {
+                      let btnClass = "bg-white hover:bg-slate-100 text-slate-700 border-slate-300";
+                      if (userChoice === opt) {
+                        btnClass = opt === q.answer
+                          ? "bg-emerald-600 text-white border-emerald-600 font-bold"
+                          : "bg-rose-500 text-white border-rose-500 font-bold";
+                      }
+                      return `
+                        <button
+                          type="button"
+                          onclick="selectQuizOption('${quizKey}', ${q.id}, '${opt.replace(/'/g, "\\'")}')"
+                          class="px-2.5 py-0.5 rounded-full border text-xs font-medium transition-colors ${btnClass}">
+                          ${opt}
+                        </button>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // INTERACTIVE HANDLERS
+    // ==========================================
+    window.selectQuizOption = function(quizKey, questionId, option) {
+      if (quizKey === "p1") {
+        p1Answers[questionId] = option;
+      } else if (quizKey === "final") {
+        finalAnswers[questionId] = option;
+      }
+      renderSlide();
+    };
+
+    window.resetQuiz = function(quizKey) {
+      if (quizKey === "p1") {
+        p1Answers = {};
+      } else if (quizKey === "final") {
+        finalAnswers = {};
+      }
+      renderSlide();
+    };
+
+    window.selectS8Option = function(qId, option) {
+      s8Answers[qId] = option;
+      renderSlide();
+    };
+
+    // ==========================================
+    // NAVIGATION & RENDERING
+    // ==========================================
+    function renderSlide() {
+      const slide = slides[currentSlide];
+      document.getElementById("slide-badge").textContent = slide.badge;
+      document.getElementById("slide-title").textContent = slide.title;
+      document.getElementById("slide-content").innerHTML = slide.render();
+
+      // Update counters
+      document.getElementById("top-counter").textContent = `${currentSlide + 1} / ${totalSlides}`;
+      document.getElementById("bottom-counter").textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+      // Update buttons
+      document.getElementById("prev-btn").disabled = currentSlide === 0;
+      document.getElementById("next-btn").disabled = currentSlide === totalSlides - 1;
+
+      // Update top progress bar
+      const topBar = document.getElementById("top-progress-bar");
+      topBar.innerHTML = slides.map((_, idx) => `
+        <div class="h-1.5 w-5 rounded-full transition-colors ${
+          idx <= currentSlide ? 'bg-sage-600' : 'bg-slate-200'
+        }"></div>
+      `).join('');
+
+      // Update bottom progress dots
+      const dotsContainer = document.getElementById("progress-dots");
+      dotsContainer.innerHTML = slides.map((_, idx) => `
+        <button
+          type="button"
+          aria-label="Go to slide ${idx + 1}"
+          onclick="goToSlide(${idx})"
+          class="h-2 rounded-full transition-all ${
+            idx === currentSlide ? 'w-5 bg-sage-600' : 'w-2 bg-slate-300 hover:bg-slate-400'
+          }">
+        </button>
+      `).join('');
+    }
+
+    window.goToSlide = function(index) {
+      if (index >= 0 && index < totalSlides) {
+        currentSlide = index;
+        renderSlide();
+      }
+    };
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      if (currentSlide > 0) {
+        currentSlide--;
+        renderSlide();
+      }
+    });
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        renderSlide();
+      }
+    });
+
+    // Keyboard Left/Right Arrow Support
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        if (currentSlide < totalSlides - 1) {
+          currentSlide++;
+          renderSlide();
+        }
+      } else if (e.key === "ArrowLeft") {
+        if (currentSlide > 0) {
+          currentSlide--;
+          renderSlide();
+        }
+      }
+    });
+
+    // Initial Render
+    renderSlide();
+  </script>
+</body>
+</html>
